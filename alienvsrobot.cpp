@@ -149,7 +149,7 @@ void Game::removeObject(int x, int y, string n)
         map_[dimY_ - delY][delX - 1] = '.';
     }
 }
-int Game::getDimX() const 
+int Game::getDimX() const
 {
     return dimX_;
 }
@@ -252,10 +252,12 @@ bool Game::isInsideMap(int x, int y)
 {
     return x >= 1 && x <= dimX_ && y >= 1 && y <= dimY_;
 }
-void test2_2()
+void play()
 {
     Game Game;
     Alien groot;
+    int x = 8, y = 3;
+    int dimX = 15, dimY = 5;
     groot.land(Game);
     Game.display();
     while (true)
@@ -265,34 +267,46 @@ void test2_2()
         cin >> n;
         if (n == "up") // move
         {
-            for (int i = 0; i < 5-3; i++)
+            int y_ = dimY - y;
+            for (int i = 0; i < y_; i++)
             {
                 groot.move(Game, n);
                 Game.display();
+                y = y + 1;
+                system("pause");
             }
         }
         else if (n == "down") // turn left
         {
-            for (int i = 0; i < 5-3; i++)
+            int y_ = y;
+            for (int i = 0; i < y_; i++)
             {
                 groot.move(Game, n);
                 Game.display();
+                y = y - 1;
+                system("pause");
             }
         }
         else if (n == "left") // turn left
         {
-            for (int i = 0; i < 15-8; i++)
+            int x_ = x;
+            for (int i = 0; i < x_; i++)
             {
                 groot.move(Game, n);
                 Game.display();
+                x = x - 1;
+                system("pause");
             }
         }
         else if (n == "right") // turn right
         {
-            for (int i = 0; i < 15-8; i++)
+            int x_ = dimX - x;
+            for (int i = 0; i < x_; i++)
             {
                 groot.move(Game, n);
                 Game.display();
+                x = x + 1;
+                system("pause");
             }
         }
     }
@@ -301,12 +315,5 @@ int main()
 {
 
     srand(1); // use this for fixed map during testing
-    // srand(time(NULL)); // try this for random map
-    // test1_1();
-    // test1_3();
-    // test1_4();
-    // test1_5();
-    // test1_6();
-    // test2_1();
-    test2_2();
+    play();
 }
