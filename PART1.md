@@ -35,8 +35,8 @@ Describe the additional features that has been implemented.
 
 ### Amir Adib
 
-1. 
-2. 
+1. Enabling an option to cuztomize the gameboard
+2. Ensuring the users will only put logical numbers when customizing (e.g insert only odd numbers, bigger than 1)
 
 ### Hakeem
 
