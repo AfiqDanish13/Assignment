@@ -435,7 +435,8 @@ int main()
         switch (choice)
         {
         case 1:
-            test(board);
+            int rowNumber, columnNumber, zombieNumber;
+            startgame(rowNumber, columnNumber, zombieNumber);            
             break;
 
         case 2:
