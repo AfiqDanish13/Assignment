@@ -257,6 +257,7 @@ void test(int board[])
     while (true)
     {
         string n;
+        cout << "<Enter help for more details on the commands>" << endl;
         cout << "Enter command: " << endl;
         cin >> n;
         if (n == "up") // move
@@ -303,6 +304,113 @@ void test(int board[])
                 system("pause");
             }
         }
+
+        else if (n=="help")
+        {
+            cout<<"\nCommands:"<<endl;
+            cout<< "1. up - Move up.\n";
+            cout<< "2. down - Move down.\n";
+            cout<< "3. right - Move right.\n";
+            cout<< "4. left - Move left.\n";
+            cout<< "5. help - Display these commands.\n"<<endl;
+
+
+            system("pause");
+            
+            cout<<endl;
+        }
+    }
+}
+
+void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
+{
+    int board[] = {5, 9, 1};
+    char response;
+    cout << "\nDefault Game Settings" << endl;
+    cout << "------------------------" << endl;
+    cout << "Board Rows      : " << board[0] << endl;
+    cout << "Board Columns   : " << board[1] << endl;
+    cout << "Zombie Count    : " << board[2] << endl;
+
+    cout << "\nDo you want to change the game settings? (y/n)\n=> ";
+    cin >> response;
+
+    if (response == 'n')
+    {
+        //system("Pause");
+
+        srand(1);
+        test(board);
+    }
+
+    else if (response == 'y')
+    {
+        while (true)
+        {
+            cout << "\nIntructions:" << endl;
+            cout << "1. Insert only odd numbers when customizing the board size!" << endl;
+            cout << "2. Row and Column number must be bigger than 1" << endl;
+
+            cout << "\nBoard Settings" << endl;
+            cout << "-----------------" << endl;
+
+            cout << "Enter number of row => ";
+            cin >> rowNumber;
+
+            if (rowNumber % 2 == 0)
+            {
+                cout << "\nPlease insert an odd number!" << endl;
+                continue;
+            }
+
+            else if(rowNumber <2)
+            {
+                cout << "\nPlease insert a number bigger than 1!" << endl;
+                continue;
+            }
+
+            cout << "Enter number of columns => ";
+            cin >> columnNumber;
+
+            if (columnNumber % 2 == 0)
+            {
+                cout << "\nPlease insert an odd number!" << endl;
+                continue;
+            }
+
+            else if(columnNumber <2)
+            {
+                cout << "\nPlease insert a number bigger than 1!" << endl;
+                continue;
+            }
+
+            break;
+        }
+
+        cout << "\nZombie Settings" << endl;
+        cout << "-----------------" << endl;
+
+        cout << "Enter number of zombies => ";
+        cin >> zombieNumber;
+
+        cout << endl;
+
+        board[0] = rowNumber; //y axis
+        board[1] = columnNumber; //x axis
+        board[2] = zombieNumber;
+
+
+        //passing the entered_input into the object variables
+        Alien obj(rowNumber , columnNumber);
+
+        cout << "Settings Updated!";
+
+        cout << endl;
+        //system("Pause");
+
+
+        srand(1);
+        test(board);
     }
 }
 
