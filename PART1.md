@@ -2,7 +2,7 @@
 
 ## Video Demo
 
-Please provide the YouTube link to your [Video Demo](https://youtube.com).
+[Video Demo](https://youtu.be/eVvWiT0gbQE).
 
 ## Minimum Requirements
 
@@ -27,7 +27,7 @@ List all the features not yet done. Remove this section if there is no incomplet
 
 ## Additional Features
 
-Describe the additional features that has been implemented.
+not yet implemented.
 
 ## Contributions
 
@@ -45,6 +45,7 @@ Describe the additional features that has been implemented.
 ### Hakeem
 
 1. Implements the game menu.
+2. Record the video of Part 1.
 
 ## Problems Encountered & Solutions
 

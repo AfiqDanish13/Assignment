@@ -2,10 +2,10 @@
 
 This is a game called Alien Vs Zombie. The objective of this game is to use the Alien to kill all the zombies in the gameboard. You can use mulltiple command or abilities to help you to achieve that goal. The Alien will spawn at the center of the gameboard and the zombies will spawn at random places at the gameboard. There is elements such as pod and health items that you can collect to assist you. Beware of rocks and borders as it can stops you from moving ! kill the zombies before it kills you. Enjoy the game !
 
-![Alt text](/snapshot.jpg)
+![Alien Vs Zombie](/snapshot.jpg)
 
 
-Please provide the YouTube link to your [Video Demo](https://youtube.com).
+[Video Demo](https://youtu.be/eVvWiT0gbQE).
 
 ## Compilation Instructions
 
@@ -20,8 +20,9 @@ Please provide the YouTube link to your [Video Demo](https://youtube.com).
 4. If you choose 1, before the game started, the output will show the default game settings. You can choose their preferences if you want to keep the settings or change it.
 5. If you want to change the settings enter n. After that enter the following settings - row number, column number and number of zombies.
 6. After that, we will be directed to the gameboard that is completed with header, elements, columns, Alien, elements and etc.
-7. The player can enter command such as up, down, left and right to move the Alien as the desired commands.
-8. The Alien movements will stop when it hist the border.
+7. The player can enter command such as "up", "down", "left" and "right" to move the Alien as the desired commands.
+8. Enter command "help" to open the command list
+9. The Alien movements will stop when it hist the border.
 
 ## Progress Log
 
