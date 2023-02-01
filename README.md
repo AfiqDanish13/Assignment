@@ -10,7 +10,7 @@ Please provide the YouTube link to your [Video Demo](https://youtube.com).
 ## Compilation Instructions
 
 1. Download the cpp file that contains the main code of the game.
-2. Run the code in the cmd (to avoid any errors)
+2. Run the code in the cmd (to avoid any errors) 
 
 ## User Manual
 
