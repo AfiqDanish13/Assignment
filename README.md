@@ -2,7 +2,7 @@
 
 This is a game called Alien Vs Zombie. The objective of this game is to use the Alien to kill all the zombies in the gameboard. You can use mulltiple command or abilities to help you to achieve that goal. The Alien will spawn at the center of the gameboard and the zombies will spawn at random places at the gameboard. There is elements such as pod and health items that you can collect to assist you. Beware of rocks and borders as it can stops you from moving ! kill the zombies before it kills you. Enjoy the game !
 
-![Alien Vs Zombie](/snapshot.jpg)
+![Alien Vs Zombie](snapshot.jpg)
 
 
 [Video Demo](https://youtu.be/eVvWiT0gbQE).
