@@ -40,17 +40,15 @@ private:
 public:
     Alien(int rowNumber, int columnNumber);
     void land(Game &Game);
-
+    int getX() const;
+    int getY() const;
     void move(Game &Game, string n);
 };
-
 Alien::Alien(int rowNumber, int columnNumber)
 {
     this->dimX = rowNumber;
     this->dimY = columnNumber;
 }
-
-
 
 Game::Game(int dimX, int dimY)
 {
@@ -85,37 +83,72 @@ void Alien::land(Game &Game)
     y_ = ceil(double(dimY) / 2);
     Game.setObject(x_, y_, 'A');
 }
-
+int Alien::getX() const
+{
+    return x_;
+}
+int Alien::getY() const
+{
+    return y_;
+}
 
 void Alien::move(Game &Game, string n)
 {
     if (n == "up")
     {
-        y_ = y_ + 1;
-        Game.setObject(x_, y_, 'A');
-        Game.removeObject(x_, y_, n);
-        // Game.setObject(x_, y_ - 1, heading_ = ' ');
+        int x = getX();
+        int y = getY();
+        int TempY = dimY - y;
+        for (int i = 0; i < TempY; i++)
+        {
+            y_ = y_ + 1;
+            Game.setObject(x_, y_, 'A');
+            Game.removeObject(x_, y_, n);
+            Game.display();
+            y = y + 1;
+        }
     }
     else if (n == "right")
     {
-        x_ = x_ + 1;
-        Game.setObject(x_, y_, 'A');
-        Game.removeObject(x_, y_, n);
-        // Game.setObject(x_ - 1, y_, heading_ = ' ');
+        int x = getX();
+        int y = getY();
+        int TempX = dimX - x;
+        for (int i = 0; i < TempX; i++)
+        {
+            x_ = x_ + 1;
+            Game.setObject(x_, y_, 'A');
+            Game.removeObject(x_, y_, n);
+            Game.display();
+            x = x + 1;
+        }
     }
     else if (n == "left")
     {
-        x_ = x_ - 1;
-        Game.setObject(x_, y_, 'A');
-        Game.removeObject(x_, y_, n);
-        // Game.setObject(x_ - 1, y_, heading_ = ' ');
+        int x = getX();
+        int y = getY();
+        int TempX = x - 1;
+        for (int i = 0; i < TempX; i++)
+        {
+            x_ = x_ - 1;
+            Game.setObject(x_, y_, 'A');
+            Game.removeObject(x_, y_, n);
+            Game.display();
+            x = x - 1;
+        }
     }
     else if (n == "down")
     {
-        y_ = y_ - 1;
-        Game.setObject(x_, y_, 'A');
-        Game.removeObject(x_, y_, n);
-        // Game.setObject(x_ - 1, y_, heading_ = ' ');
+        int x = getX();
+        int y = getY();
+        int TempY = y - 1;
+        for (int i = 0; i < TempY; i++)
+        {
+            y_ = y_ - 1;
+            Game.setObject(x_, y_, 'A');
+            Game.removeObject(x_, y_, n);
+            Game.display();
+            y = y + 1;
+        }
     }
 }
 void Game::removeObject(int x, int y, string n)
@@ -145,7 +178,6 @@ void Game::removeObject(int x, int y, string n)
         map_[dimY_ - delY][delX - 1] = '.';
     }
 }
-
 void Game::display() const
 {
     //display header
@@ -247,9 +279,6 @@ void Game::setObject(int &x, int &y, char ch)
 void test(int board[])
 {
     int dimX = board[1], dimY = board[0];
-    int x, y;
-    x = ceil(double(dimX)/2);
-    y = ceil(double(dimY)/2);
     Game Game(dimX, dimY);
     Alien groot(dimX, dimY);
     groot.land(Game);
@@ -260,49 +289,26 @@ void test(int board[])
         cout << "<Enter help for more details on the commands>" << endl;
         cout << "Enter command: " << endl;
         cin >> n;
-        if (n == "up") // move
+        if (n == "up")
         {
-            int y_ = dimY - y;
-            for (int i = 0; i < y_; i++)
-            {
-                groot.move(Game, n);
-                Game.display();
-                y = y + 1;
-                system("pause");
-            }
+            groot.move(Game, n);
         }
-        else if (n == "down") // turn left
+        else if (n == "down")
         {
-            int y_ = y-1;
-            for (int i = 0; i < y_; i++)
-            {
-                groot.move(Game, n);
-                Game.display();
-                y = y - 1;
-                system("pause");
-            }
+            groot.move(Game, n);
         }
-        else if (n == "left") // turn left
+        else if (n == "left")
         {
-            int x_ = x - 1;
-            for (int i = 0; i < x_; i++)
-            {
-                groot.move(Game, n);
-                Game.display();
-                x = x - 1;
-                system("pause");
-            }
+            groot.move(Game, n);
         }
-        else if (n == "right") // turn right
+        else if (n == "right")
         {
-            int x_ = dimX  - x;
-            for (int i = 0; i < x_; i++)
-            {
-                groot.move(Game, n);
-                Game.display();
-                x = x + 1;
-                system("pause");
-            }
+            groot.move(Game, n);
+        }
+                
+        else if (n == "arrow") // do change arrow
+        {
+            // change arrow
         }
 
         else if (n=="help")
@@ -313,11 +319,22 @@ void test(int board[])
             cout<< "3. right - Move right.\n";
             cout<< "4. left - Move left.\n";
             cout<< "5. help - Display these commands.\n"<<endl;
-
-
-            system("pause");
-            
+            //system("pause"); 
             cout<<endl;
+        }
+        else if (n == "save") // do save function
+        {
+            // save game
+        }
+
+        else if (n == "save") // do save function
+        {
+            // save game
+        }
+
+        else if (n == "quit") // do save function
+        {
+            break;
         }
     }
 }
@@ -325,7 +342,7 @@ void test(int board[])
 void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 {
     int board[] = {5, 9, 1};
-    char response;
+    char response = 'n';
     cout << "\nDefault Game Settings" << endl;
     cout << "------------------------" << endl;
     cout << "Board Rows      : " << board[0] << endl;
@@ -333,7 +350,7 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
     cout << "Zombie Count    : " << board[2] << endl;
 
     cout << "\nDo you want to change the game settings? (y/n)\n=> ";
-    cin >> response;
+    //cin >> response;
 
     if (response == 'n')
     {
@@ -416,7 +433,7 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 
 int main()
 {
-    int choice;
+    int choice = 1;
     bool gameOn = true;
     int board[] = {5, 9, 1};
     while (gameOn)
@@ -430,7 +447,7 @@ int main()
         cout << "| 3 => Quit                                   |" << endl;
         cout << "+---------------------------------------------+" << endl;
         cout << "Choice => ";
-        cin >> choice;
+        //cin >> choice;
 
         switch (choice)
         {
