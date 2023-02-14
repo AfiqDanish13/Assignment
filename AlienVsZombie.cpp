@@ -27,7 +27,7 @@ public:
     Game(int dimX, int dimY);
     void init(int dimX, int dimY);
     void display() const;
-
+    void changeArrow(int column, int row , string n);
     void setObject(int &x, int &y, char ch);
     void removeObject(int x, int y, string n);
 };
@@ -75,6 +75,25 @@ void Game::init(int dimX, int dimY)
             int objNo = rand() % noOfObjects;
             map_[i][j] = objects[objNo];
         }
+    }
+}
+void Game::changeArrow(int column, int row , string n)
+{
+    if (n == "up")
+    {
+        map_[column - 1][row - 1] = '^';
+    }
+    else if (n == "right")
+    {
+        map_[column - 1][row - 1] = '>';
+    }
+    else if (n == "left")
+    {
+        map_[column - 1][row - 1] = '<';
+    }
+    else if (n == "down")
+    {
+        map_[column - 1][row - 1] = 'v';
     }
 }
 void Alien::land(Game &Game)
@@ -285,10 +304,10 @@ void test(int board[])
     Game.display();
     while (true)
     {
-        string n;
+        string n = "arrow";
         cout << "<Enter help for more details on the commands>" << endl;
         cout << "Enter command: " << endl;
-        cin >> n;
+        //cin >> n;
         if (n == "up")
         {
             groot.move(Game, n);
@@ -308,7 +327,11 @@ void test(int board[])
                 
         else if (n == "arrow") // do change arrow
         {
-            // change arrow
+            cout << "Enter row, column, and direction: ";
+            int column, row;
+            cin >> column >> row >> n;
+            Game.changeArrow(column, row , n);
+            Game.display();
         }
 
         else if (n=="help")
