@@ -19,7 +19,7 @@
 #include <fstream>
 
 using namespace std;
-// game class
+// Game class
 class Game
 {
 private:
@@ -53,6 +53,7 @@ void Game::board(int row, int column, int zombie, char *random, int alife, int a
         cout << "_--_";
     }
     cout << endl;
+    // display gameboard
     int r;
     int c;
     int z = 0;
@@ -150,6 +151,7 @@ void Game::board(int row, int column, int zombie, char *random, int alife, int a
             cout << d << " ";
         }
     }
+    // display  status of alien and zombie
     cout << endl
          << endl
          << "-> Alien   : Life " << alife << ", Attack " << aattack << endl;
@@ -160,6 +162,7 @@ void Game::board(int row, int column, int zombie, char *random, int alife, int a
     cout << endl;
 }
 
+// function to display help menu
 void help()
 {
     cout << "           Object           " << endl;
@@ -189,14 +192,17 @@ void help()
     cout << endl;
 }
 
+// function for alien attributes
 void Game::al(int &alife, int &aattack)
 {
     alife = 100;
     aattack = 0;
 }
 
+// function to start the game
 void Game::start(int row, int column, int zombie)
 {
+    // declare important game variables
     system("cls");
     bool win = false;
     bool zombiedead = false;
@@ -281,7 +287,7 @@ void Game::start(int row, int column, int zombie)
         range = ((rand() % 3) + 1);
         zombdata[z][2] = range;
     }
-
+    
     do
     {
         bool turn = false;
@@ -295,6 +301,7 @@ void Game::start(int row, int column, int zombie)
             while (!arrowdone)
             {
                 board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                // ask input from the user for command and its properties
                 cout << "command> ";
                 cin >> command;
                 // function to change arrow
@@ -355,6 +362,7 @@ void Game::start(int row, int column, int zombie)
                 }
                 else if (command == "skill")
                 {
+                    // skill that is additional features
                     cout << "You have regen skill \nSkill remaining: " << skillCount << endl;
                     system("pause");
                     if (skillCount != 0)
@@ -370,6 +378,7 @@ void Game::start(int row, int column, int zombie)
                 }
                 else if (command == "save")
                 {
+                    // save information to txt file so it can be load when we import it 
                     int m = column, n = row;
                     string name;
                     cout << "Choose a name to save current file: ";
@@ -437,6 +446,7 @@ void Game::start(int row, int column, int zombie)
                     }
                 }
                 int gr, gc;
+                // check object in next location
                 while (!movedone)
                 {
                     switch (com)
@@ -465,7 +475,7 @@ void Game::start(int row, int column, int zombie)
                     }
                     // done
 
-                    // check going place
+                    // check going place and its behaviour
                     char nextcom;
                     string alienstatus, zombielifedamage, zombiestatus;
 
@@ -620,7 +630,7 @@ void Game::start(int row, int column, int zombie)
                     {
                         break;
                     }
-                    //
+                    // zombie behaviour
                     for (z = 0; z < zombie; z++)
                     {
                         char go = (z + 49);
@@ -645,7 +655,7 @@ void Game::start(int row, int column, int zombie)
                     cout << alienstatus;
                     system("pause");
                     system("cls");
-                    // alien movement
+                    // alien movement according to the command
                     switch (com)
                     {
                     case '^':
@@ -674,6 +684,7 @@ void Game::start(int row, int column, int zombie)
                         movedone = true;
                         break;
                     }
+                    //  dispplay in gameboard
                     board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
                     com = nextcom;
                 }
@@ -683,6 +694,7 @@ void Game::start(int row, int column, int zombie)
             {
                 zombiedead = true;
             }
+            // check if alien's turn end, and its instructions
             if (zombiedead == false && playerquit == false)
             {
                 cout << "Alien's turn ended.\n";
@@ -776,6 +788,7 @@ void Game::start(int row, int column, int zombie)
                 next_zombie:; // label for goto statement
                 }
                 bool zombiemovedone = false;
+                // zombie behaviour - attack alien if its in range or not
                 while (!zombiemovedone)
                 {
                     int zr, zc;
@@ -796,6 +809,7 @@ void Game::start(int row, int column, int zombie)
                                 }
                             }
                         }
+                        // zombie attack alien
                         for (int ragr = -range; ragr <= range; ragr++)
                         {
                             for (int ragc = -range; ragc <= range; ragc++)
@@ -840,6 +854,7 @@ void Game::start(int row, int column, int zombie)
                     zombiemovedone = true;
                 }
             }
+            // check whether the zombie still alive and its properties
             else if (zombiedead == true)
             {
                 turn = true;
@@ -857,6 +872,7 @@ void Game::start(int row, int column, int zombie)
     } while (!win);
 }
 
+// gameboard that specialised for load 
 void Gameboard(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata)
 {
     cout << ".: Alien vs Zombie :." << endl;
@@ -968,6 +984,7 @@ void Gameboard(int row, int column, int zombie, char *random, int alife, int aat
     cout << endl;
 }
 
+// menu display default settings
 void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 {
     int board[] = {5, 9, 1};
@@ -1055,11 +1072,13 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
         Game.start(board[0], board[1], board[2]);
     }
 }
+// aliens properties 
 void al(int &alife, int &aattack)
 {
     alife = 100;
     aattack = 0;
 }
+// menu to display early choice
 int main()
 {
     int choice;
