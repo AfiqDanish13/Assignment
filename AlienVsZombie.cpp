@@ -21,346 +21,623 @@ using namespace std;
 class Game
 {
 private:
-    vector<vector<char>> map_; // convention to put trailing underscore
-    int dimX_, dimY_;          // to indicate private data
+    int column, row, zombie;
 public:
-    Game(int dimX, int dimY);
-    void init(int dimX, int dimY);
-    void display() const;
-    void changeArrow(int column, int row , string n);
-    void setObject(int &x, int &y, char ch);
-    void removeObject(int x, int y, string n);
+    Game(int row, int column, int zombie);
+    void start(int row, int column, int zombie);
+
+    void board(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata);
 };
-class Alien
-{
-private:
-    int x_, y_;
-    int dimX;
-    int dimY;
-public:
-    Alien(int rowNumber, int columnNumber);
-    void land(Game &Game);
-    int getX() const;
-    int getY() const;
-    void move(Game &Game, string n);
-};
-Alien::Alien(int rowNumber, int columnNumber)
-{
-    this->dimX = rowNumber;
-    this->dimY = columnNumber;
-}
 
-Game::Game(int dimX, int dimY)
+// create gameboard
+void Game::board(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata)
 {
-    init(dimX, dimY);
-}
-void Game::init(int dimX, int dimY)
-{
-    dimX_ = dimX;
-    dimY_ = dimY;
-    char objects[] = {' ', ' ', 'h', 'p', ' ', 'r', ' ', ' ' ,'^', '>', 'v', '<'};
-    int noOfObjects = 12; // number of objects in the objects array
-    // create dynamic 2D array using vector
-    map_.resize(dimY_); // create empty rows
-    for (int i = 0; i < dimY_; ++i)
-
+    // display header
+    cout << endl;
+    for (int i = 0; i < column / 2 + 1; ++i)
     {
-        map_[i].resize(dimX_); // resize each row
+        cout << "_--_";
     }
-    // put random characters into the vector array
-    for (int i = 0; i < dimY_; ++i)
+    cout << endl;
+    cout << ".: Alien vs Zombie :." << endl;
+    for (int i = 0; i < column / 2 + 1; ++i)
     {
-        for (int j = 0; j < dimX_; ++j)
-        {
-            int objNo = rand() % noOfObjects;
-            map_[i][j] = objects[objNo];
-        }
+        cout << "_--_";
     }
-}
-void Game::changeArrow(int column, int row , string n)
-{
-    if (n == "up")
+    cout << endl;
+    int r;
+    int c;
+    int z = 0;
+    int n;
+    char ran;
+    for (r = 0; r < row; r++)
     {
-        map_[column - 1][row - 1] = '^';
-    }
-    else if (n == "right")
-    {
-        map_[column - 1][row - 1] = '>';
-    }
-    else if (n == "left")
-    {
-        map_[column - 1][row - 1] = '<';
-    }
-    else if (n == "down")
-    {
-        map_[column - 1][row - 1] = 'v';
-    }
-}
-void Alien::land(Game &Game)
-{
-    x_ = ceil(double(dimX) / 2);
-    y_ = ceil(double(dimY) / 2);
-    Game.setObject(x_, y_, 'A');
-}
-int Alien::getX() const
-{
-    return x_;
-}
-int Alien::getY() const
-{
-    return y_;
-}
-
-void Alien::move(Game &Game, string n)
-{
-    if (n == "up")
-    {
-        int x = getX();
-        int y = getY();
-        int TempY = dimY - y;
-        for (int i = 0; i < TempY; i++)
-        {
-            y_ = y_ + 1;
-            Game.setObject(x_, y_, 'A');
-            Game.removeObject(x_, y_, n);
-            Game.display();
-            y = y + 1;
-        }
-    }
-    else if (n == "right")
-    {
-        int x = getX();
-        int y = getY();
-        int TempX = dimX - x;
-        for (int i = 0; i < TempX; i++)
-        {
-            x_ = x_ + 1;
-            Game.setObject(x_, y_, 'A');
-            Game.removeObject(x_, y_, n);
-            Game.display();
-            x = x + 1;
-        }
-    }
-    else if (n == "left")
-    {
-        int x = getX();
-        int y = getY();
-        int TempX = x - 1;
-        for (int i = 0; i < TempX; i++)
-        {
-            x_ = x_ - 1;
-            Game.setObject(x_, y_, 'A');
-            Game.removeObject(x_, y_, n);
-            Game.display();
-            x = x - 1;
-        }
-    }
-    else if (n == "down")
-    {
-        int x = getX();
-        int y = getY();
-        int TempY = y - 1;
-        for (int i = 0; i < TempY; i++)
-        {
-            y_ = y_ - 1;
-            Game.setObject(x_, y_, 'A');
-            Game.removeObject(x_, y_, n);
-            Game.display();
-            y = y + 1;
-        }
-    }
-}
-void Game::removeObject(int x, int y, string n)
-{
-    if (n == "up")
-    {
-        int delX = x;
-        int delY = y - 1;
-        map_[dimY_ - delY][delX - 1] = '.';
-    }
-    else if (n == "right")
-    {
-        int delX = x - 1;
-        int delY = y;
-        map_[dimY_ - delY][delX - 1] = '.';
-    }
-    else if (n == "left")
-    {
-        int delX = x + 1;
-        int delY = y;
-        map_[dimY_ - delY][delX - 1] = '.';
-    }
-    else if (n == "down")
-    {
-        int delX = x;
-        int delY = y + 1;
-        map_[dimY_ - delY][delX - 1] = '.';
-    }
-}
-void Game::display() const
-{
-    //display header
-    for (int i= 0; i<dimX_/2 + 1; ++i)
-    {
-        cout << "__--";
-    }
-    cout << "_" << endl;
-    if (dimX_ > 9)
-    {
-        for (int i= 0; i<dimX_/2 ; ++i)
-        {
         cout << " ";
+        if (row > 9)
+        {
+            cout << " ";
         }
-    }
-    
-    cout << " .: Alien vs Zombie :." << endl;
-    for (int i= 0; i<dimX_/2 + 1; ++i)
-    {
-        cout << "__--";
-    }
-    cout << "_" << endl;
-
-    // for each row
-    for (int i = 0; i < dimY_; ++i)
-    {
-        // display upper border of the row
-        cout << " ";
-        for (int j = 0; j < dimX_; ++j)
+        for (c = 0; c < column; c++)
         {
             cout << "+-";
         }
         cout << "+" << endl;
-        // display row number
-        cout << setw(2) << (i+1);
-        // display cell content and border of each column
-        for (int j = 0; j < dimX_; ++j)
+        if (row > 9 && r < 9)
         {
-            cout << "|" << map_[i][j];
+            cout << " ";
+        }
+        cout << r + 1;
+        for (c = 0; c < column; c++)
+        {
+            cout << "|";
+            cout << *(random + r * column + c);
         }
         cout << "|" << endl;
     }
-    // display lower border of the last row
     cout << " ";
-    for (int j = 0; j < dimX_; ++j)
+    if (row > 9)
+    {
+        cout << " ";
+    }
+    for (c = 0; c < column; c++)
     {
         cout << "+-";
     }
     cout << "+" << endl;
-    // display column number
-    cout << "  ";
-    for (int j = 0; j < dimX_; ++j)
+    int tens = (column - 10) / 10;
+    int dec = column % 10;
+    int t = 1;
+    int d;
+    if (column > 10)
     {
-        int digit = (j + 1) / 10;
-        cout << " ";
-        if (digit == 0)
+        if (row > 10)
+        {
             cout << " ";
-        else
-            cout << digit;
-    }
-    cout << endl;
-    cout << "  ";
-    for (int j = 0; j < dimX_; ++j)
-    {
-        cout << " " << (j + 1) % 10;
-    }
-    cout << endl
-         << endl;
-}
-void Game::setObject(int &x, int &y, char ch)
-{
-    int boundX_ = x;
-    if (y > dimY_)
-    {
-        y = y - 1;
-        map_[dimY_ - y][x - 1] = 'A';
-    }
-    else if (y == 0)
-    {
-        y = y + 1;
-        map_[dimY_ - y][x - 1] = 'A';
-    }
-    else if (x > dimX_)
-    {
-        x = x - 1;
-        map_[dimY_ - y][x - 1] = 'A';
-    }
-    else if (x == 0)
-    {
-        x = x + 1;
-        map_[dimY_ - y][x - 1] = 'A';
+        }
+        cout << "  ";
+        for (c = 0; c < 9; c++)
+        {
+            cout << "  ";
+        }
+        for (t = 0; t < tens; t++)
+        {
+            for (c = 0; c < 10; c++)
+            {
+                cout << t + 1 << " ";
+            }
+        }
+        for (d = 0; d <= dec; d++)
+        {
+            cout << t + 1 << " ";
+        }
+        cout << endl;
+        if (row > 10)
+        {
+            cout << " ";
+        }
+        cout << " ";
+        int m = 1;
+        for (m = 0; m <= tens; m++)
+        {
+            for (c = 1; c < 10; c++)
+            {
+                cout << " " << c;
+            }
+            cout << " 0";
+        }
+        for (d = 1; d <= dec; d++)
+        {
+            cout << " " << d;
+        }
     }
     else
     {
-        map_[dimY_ - y][x - 1] = 'A';
+        if (row > 10)
+        {
+            cout << " ";
+        }
+        cout << "  ";
+        for (d = 1; d <= dec; d++)
+        {
+            cout << d << " ";
+        }
     }
-}
-
-void test(int board[])
-{
-    int dimX = board[1], dimY = board[0];
-    Game Game(dimX, dimY);
-    Alien groot(dimX, dimY);
-    groot.land(Game);
-    Game.display();
-    while (true)
+    cout << endl
+         << endl
+         << "-> Alien   : Life " << alife << ", Attack " << aattack << endl;
+    for (z = 0; z < zombie; z++)
     {
-        string n = "arrow";
-        cout << "<Enter help for more details on the commands>" << endl;
-        cout << "Enter command: " << endl;
-        //cin >> n;
-        if (n == "up")
-        {
-            groot.move(Game, n);
-        }
-        else if (n == "down")
-        {
-            groot.move(Game, n);
-        }
-        else if (n == "left")
-        {
-            groot.move(Game, n);
-        }
-        else if (n == "right")
-        {
-            groot.move(Game, n);
-        }
-                
-        else if (n == "arrow") // do change arrow
-        {
-            cout << "Enter row, column, and direction: ";
-            int column, row;
-            cin >> column >> row >> n;
-            Game.changeArrow(column, row , n);
-            Game.display();
-        }
+        cout << "   Zombie " << z + 1 << ": Life " << *(zombdata + z * 4) << ", Attack " << *(zombdata + z * 4 + 1) << ", Range " << *(zombdata + z * 4 + 2) << endl;
+    }
+    cout << endl;
+}
 
-        else if (n=="help")
+void Game::start(int row, int column, int zombie)
+{
+    system("cls");
+    bool win = false;
+    bool zombiedead = false;
+    bool playerquit = false;
+    char com, ran;
+    int r, c, z;
+    int w = (column * 2 - 19) / 2;
+    int alife = 100;
+    int aattack = 0;
+    int zombiedeadnum = 0;
+    int zlife, zattack, range;
+    int skillCount = 1;
+    vector<char> object = {'^', 'v', '<', '>', 'h', 'p', 'r', ' '};
+    vector<char> norock = {'^', 'v', '<', '>', 'h', 'p', ' '};
+    char random[row][column];
+    int zombdata[zombie][4];
+    srand(time(NULL));
+    int o = object.size();
+    int nrock = norock.size();
+    // set elements inside the gameboard
+    for (c = 0; c < w; c++)
+    {
+        cout << " ";
+    }
+    cout << " ";
+    if (row > 9)
+    {
+        cout << " ";
+    }
+    for (r = 0; r < row; r++)
+    {
+        for (c = 0; c < column; c++)
         {
-            cout<<"\nCommands:"<<endl;
-            cout<< "1. up - Move up.\n";
-            cout<< "2. down - Move down.\n";
-            cout<< "3. right - Move right.\n";
-            cout<< "4. left - Move left.\n";
-            cout<< "5. help - Display these commands.\n"<<endl;
-            //system("pause"); 
-            cout<<endl;
-        }
-        else if (n == "save") // do save function
-        {
-            // save game
-        }
-
-        else if (n == "save") // do save function
-        {
-            // save game
-        }
-
-        else if (n == "quit") // do save function
-        {
-            break;
+            ran = object[rand() % o];
+            random[r][c] = ran;
         }
     }
-}
+
+    // place alien at the middle of the gameboard
+    random[row / 2][column / 2] = 'A';
+
+    // add zombie into the gameboard
+    for (z = 0; z < zombie;)
+    {
+        r = rand() % (row - 1);
+        c = rand() % (column - 1);
+        if ((random[r][c] == 'A') || (random[r][c] == 'Z'))
+        {
+            continue;
+        }
+        else
+        {
+            random[r][c] = 'Z';
+            z += 1;
+        }
+    }
+
+    for (int z = 0; z < zombie;)
+    {
+        for (r = 0; r < row; r++)
+        {
+            for (c = 0; c < column; c++)
+            {
+                ran = random[r][c];
+                if (ran == 'Z')
+                {
+                    char ram = char(49 + z);
+                    random[r][c] = ram;
+                    z += 1;
+                }
+            }
+        }
+    }
+    al(alife, aattack);
+    // zombie data and attributes
+    for (z = 0; z < zombie; z++)
+    {
+        zlife = ((rand() % 4) * 50 + 100);
+        zombdata[z][0] = zlife;
+        zattack = ((rand() % 3) * 5 + 5);
+        zombdata[z][1] = zattack;
+        range = ((rand() % 3) + 1);
+        zombdata[z][2] = range;
+    }
+
+    do
+    {
+        bool turn = false;
+        string command;
+        char com;
+        do
+        {
+            int arrowrow, arrowcolumn;
+            char direction;
+            bool arrowdone = false;
+            while (!arrowdone)
+            {
+                board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                cout << "command> ";
+                cin >> command;
+                // function to change arrow
+                if (command == "arrow")
+                {
+                    cout << "Enter row, column, and direction: ";
+                    cin >> arrowrow >> arrowcolumn >> direction;
+                    // cout << arrowrow << arrowcolumn << direction;
+                    if (random[arrowrow - 1][arrowcolumn - 1] == '^' || random[arrowrow - 1][arrowcolumn - 1] == 'v' || random[arrowrow - 1][arrowcolumn - 1] == '<' || random[arrowrow - 1][arrowcolumn - 1] == '>')
+                    {
+                        switch (direction)
+                        {
+                        case 'u':
+                            random[arrowrow - 1][arrowcolumn - 1] = '^';
+                            break;
+                        case 'd':
+                            random[arrowrow - 1][arrowcolumn - 1] = 'v';
+                            break;
+                        case 'l':
+                            random[arrowrow - 1][arrowcolumn - 1] = '<';
+                            break;
+                        case 'r':;
+                            random[arrowrow - 1][arrowcolumn - 1] = '>';
+                            break;
+                        }
+                        cin >> command;
+                        cout << "The direction of arrow was changed." << endl;
+                        system("pause");
+                        system("cls");
+                    }
+                    else
+                    {
+                        cin >> command;
+                        cout << "That is not an arrow.";
+                        system("pause");
+                        system("cls");
+                    }
+                }
+                else if (command == "up")
+                {
+                    com = '^';
+                    arrowdone = true;
+                }
+                else if (command == "down")
+                {
+                    com = 'v';
+                    arrowdone = true;
+                }
+                else if (command == "left")
+                {
+                    com = '<';
+                    arrowdone = true;
+                }
+                else if (command == "right")
+                {
+                    com = '>';
+                    arrowdone = true;
+                }
+                else if (command == "skill")
+                {
+                    cout << "You have regen skill \nSkill remaining: " << skillCount << endl;
+                    system("pause");
+                    if (skillCount != 0)
+                    {
+                        al(alife, aattack);
+                        skillCount -= 1;
+                    }
+                    else
+                    {
+                        cout << "you run out of skill !";
+                    }
+                    system("cls");
+                }
+                else if (command == "save")
+                {
+                    int m = column, n = row;
+                    string name;
+                    cout << "Choose a name to save current file: ";
+                    cin >> name;
+                    string file = ".txt";
+                    string fileName = name + file;
+                    ofstream MyFile(fileName);
+                    MyFile << row << " "
+                           << column << " "
+                           << zombie << endl;
+                    for (int i = 0; i < n; i++)
+                    {
+                        for (int j = 0; j < m; j++)
+                        {
+                            if (random[i][j] == ' ')
+                            {
+                                MyFile << '_' << endl;
+                            }
+                            else
+                            {
+                                MyFile << random[i][j] << endl;
+                            }
+                        }
+                    }
+                    MyFile << alife << " " << aattack << endl;
+                    for (z = 0; z < zombie; z++)
+                    {
+                        MyFile << zombdata[z][0] << " "
+                               << zombdata[z][1] << " "
+                               << zombdata[z][2] << endl;
+                    }
+                    cout << "File saved successfully" << endl;
+                    system("pause");
+                    system("cls");
+                    cout << endl;
+                    MyFile.close();
+                }
+                else if (command == "quit")
+                {
+                    playerquit = true;
+                    system("cls");
+                    break;
+                }
+                else
+                {
+                    help();
+                }
+            }
+
+            if (playerquit == false)
+            {
+                bool movedone = false;
+                int ar, ac, zr, zc;
+                char going;
+                for (int r = 0; r < row; r++)
+                {
+                    for (int c = 0; c < column; c++)
+                    {
+                        char A = random[r][c];
+                        if (A == 'A')
+                        {
+                            ar = r;
+                            ac = c;
+                        }
+                    }
+                }
+                int gr, gc;
+                while (!movedone)
+                {
+                    switch (com)
+                    {
+                    // get going place
+                    case '^':
+                        gr = ar - 1;
+                        gc = ac;
+                        going = random[gr][gc];
+                        break;
+                    case 'v':
+                        gr = ar + 1;
+                        gc = ac;
+                        going = random[gr][gc];
+                        break;
+                    case '<':
+                        gr = ar;
+                        gc = ac - 1;
+                        going = random[gr][gc];
+                        break;
+                    case '>':
+                        gr = ar;
+                        gc = ac + 1;
+                        going = random[gr][gc];
+                        break;
+                    }
+                    // done
+
+                    // check going place
+                    char nextcom;
+                    string alienstatus, zombielifedamage, zombiestatus;
+
+                    switch (going)
+                    {
+                    case '^':
+                        alienstatus = "Alien finds an arrow.\nAlien's attack is increased by 20.\n";
+                        aattack = aattack + 20;
+                        nextcom = '^';
+                        break;
+                    case 'v':
+                        alienstatus = "Alien finds an arrow.\nAlien's attack is increased by 20.\n";
+                        aattack = aattack + 20;
+                        nextcom = 'v';
+                        break;
+                    case '<':
+                        alienstatus = "Alien finds an arrow.\nAlien's attack is increased by 20.\n";
+                        aattack = aattack + 20;
+                        nextcom = '<';
+                        break;
+                    case '>':
+                        alienstatus = "Alien finds an arrow.\nAlien's attack is increased by 20.\n";
+                        aattack = aattack + 20;
+                        nextcom = '>';
+                        break;
+                    case 'h':
+                        nextcom = com;
+                        alife = alife + 20;
+                        if (alife > 100)
+                        {
+                            alife = 100;
+                            alienstatus = "Alien finds a health bag, alien's health is increaces by 20.\nAlien's health in limited at 100.\n";
+                        }
+                        else
+                        {
+                            alienstatus = "Alien finds a health bag, alien's health is increaces by 20.\n";
+                        }
+                        break;
+                    case 'p':
+                    {
+                        int check;
+                        nextcom = com;
+                        bool podatt = false;
+                        int ragr = -1;
+                        int ragc = -1;
+                        int ragrt, ragct;
+                        int zombieinrange = 0;
+                        cout << "Alien finds a pod.\n";
+                        while (podatt == false)
+                        {
+                            for (ragrt = ragr; ragrt <= -ragr; ragrt++)
+                            {
+                                int arragrt = gr + ragrt;
+                                if (arragrt < 0)
+                                {
+                                    arragrt = 0;
+                                    ragrt = 0;
+                                }
+                                for (ragct = ragc; ragct <= -ragc; ragct++)
+                                {
+                                    for (z = 0; z < zombie; z++)
+                                    {
+                                        char go = (z + 49);
+                                        int acragct = gc + ragct;
+                                        char alienattacting = random[arragrt][acragct];
+                                        if (acragct < 0)
+                                        {
+                                            acragct = 0;
+                                            ragct = 0;
+                                            alienattacting = random[arragrt][acragct];
+                                        }
+                                        else if (acragct > column)
+                                        {
+                                            alienattacting = ' ';
+                                        }
+
+                                        if (alienattacting == go)
+                                        {
+                                            zombieinrange = zombieinrange + 1;
+                                            zombdata[z][3] = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (zombieinrange > 0)
+                            {
+                                while (podatt == false)
+                                {
+                                    int rannum = rand() % 5;
+                                    char zombpod = (rannum + 49);
+                                    if (zombdata[rannum][3] == 1)
+                                    {
+                                        zombdata[rannum][0] = zombdata[rannum][0] - 10;
+                                        // cout << zombdata[rannum][0];
+                                        cout << "Zombie " << zombpod << " receive 10 damage" << endl;
+                                        if (zombdata[rannum][0] <= 0) // not yet receive damage
+                                        {
+                                            cout << "Zombie " << zombpod << " is dead\n";
+                                            random[gr][gc] = ' ';
+                                            zombiedeadnum = zombiedeadnum + 1;
+                                        }
+                                        else
+                                        {
+                                            cout << "Zombie " << zombpod << " is still alive\n";
+                                        }
+                                        podatt = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ragc = ragc - 1;
+                                ragr = ragr - 1;
+                            }
+                        }
+                        break;
+                    }
+                    case 'r':
+                        com = 's';
+                        nextcom = 's';
+                        ran = norock[rand() % nrock];
+                        random[gr][gc] = ran;
+                        alienstatus = "Alien hits a rock, the object beneath the rock is revealed.\n";
+                        break;
+                    case ' ':
+                        nextcom = com;
+                        alienstatus = "Alien finds an empty space.\n";
+                        break;
+                    case '.':
+                        nextcom = com;
+                        alienstatus = "Alien finds an empty space.\n";
+                        break;
+                    default:
+                        com = 's';
+                        alienstatus = "Alien reached the side of the game.\n";
+                        break;
+                    }
+                    // stop at the boundaries
+                    if (ar == 0 && com == '^')
+                    {
+                        break;
+                    }
+                    else if (ar == row - 1 && com == 'V')
+                    {
+                        break;
+                    }
+                    else if (ac == 0 && com == '<')
+                    {
+                        break;
+                    }
+                    else if (ac == column - 1 && com == '>')
+                    {
+                        break;
+                    }
+                    //
+                    for (z = 0; z < zombie; z++)
+                    {
+                        char go = (z + 49);
+                        if (going == go)
+                        {
+                            zombdata[z][0] = zombdata[z][0] - aattack;
+                            cout << "Alien attacks Zombie " << go << "\nZombie " << go << " receives a damage of " << aattack << endl;
+                            alienstatus = "Alien hits zombie and stop.\n";
+                            if (zombdata[z][0] <= 0)
+                            {
+                                cout << "Zombie " << go << " is dead\n";
+                                random[gr][gc] = ' ';
+                                zombiedeadnum = zombiedeadnum + 1;
+                            }
+                            else
+                            {
+                                cout << "Zombie " << go << " is still alive\n";
+                            }
+                        }
+                    }
+
+                    cout << alienstatus;
+                    system("pause");
+                    system("cls");
+                    // alien movement
+                    switch (com)
+                    {
+                    case '^':
+                        random[ar][ac] = '.';
+                        random[ar - 1][ac] = 'A';
+                        ar = ar - 1;
+                        break;
+                    case 'v':
+                        random[ar][ac] = '.';
+                        random[ar + 1][ac] = 'A';
+                        ar = ar + 1;
+                        break;
+                    case '<':
+                        random[ar][ac] = '.';
+                        random[ar][ac - 1] = 'A';
+                        ac = ac - 1;
+                        break;
+                    case '>':
+                        random[ar][ac] = '.';
+                        random[ar][ac + 1] = 'A';
+                        ac = ac + 1;
+                        break;
+                    case 's':
+                        alienstatus = "";
+                        turn = true;
+                        movedone = true;
+                        break;
+                    }
+                    board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                    com = nextcom;
+                }
+
+            }
+            //hakeem sambung
+        }
 
 void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 {
@@ -481,43 +758,9 @@ int main()
 
         case 2:
 
-            gameOn = false;
-            int loadchoice;
-            bool loadmenu = true;
-            cout << " Choose your save file \n";
-            cout << " 1 => raja.txt \n";
-            cout << " 2 => hakeem.txt\n";
-
-            cout << " choose your file \n";
-
-            cin >> loadchoice;
-
-            if (loadchoice == 1)
-            {
-                char mainmenuselector;
-
-                cout << "file one selcted\n";
-                while (loadmenu)
-                {
-                    cout << "Do you want to go back?(y/n) \n";
-
-                    cin >> mainmenuselector;
-                    if (mainmenuselector == 'y')
-                    {
-                        loadmenu = false;
-                        gameOn = true;
-                    }
-                    else if (mainmenuselector == 'n')
-                    {
-                        gameOn = false;
-                        break;
-                    }
-                    else
-                    {
-                        loadmenu = true;
-                    }
-                }
-            }
+            
+                
+        }
         }
     }
 }
