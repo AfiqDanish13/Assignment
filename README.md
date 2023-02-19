@@ -5,7 +5,7 @@ This is a game called Alien Vs Zombie. The objective of this game is to use the 
 ![Alien Vs Zombie](snapshot.jpg)
 
 
-[Video Demo](https://youtu.be/eVvWiT0gbQE).
+[Video Demo](https://youtu.be/S5WiQGlqg2o).
 
 ## Compilation Instructions
 
