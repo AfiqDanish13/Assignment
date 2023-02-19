@@ -14,15 +14,7 @@ This is a game called Alien Vs Zombie. The objective of this game is to use the 
 
 ## User Manual
 
-1. Run the cpp file in the cmd (AlienVsZombie.cpp).
-2. The output will show the main menu and the selection that we can choose consist of start, load and quit.
-3. To start the game, enter 1 into the choice.
-4. If you choose 1, before the game started, the output will show the default game settings. You can choose their preferences if you want to keep the settings or change it.
-5. If you want to change the settings enter n. After that enter the following settings - row number, column number and number of zombies.
-6. After that, we will be directed to the gameboard that is completed with header, elements, columns, Alien, elements and etc.
-7. The player can enter command such as "up", "down", "left" and "right" to move the Alien as the desired commands.
-8. Enter command "help" to open the command list
-9. The Alien movements will stop when it hist the border.
+[User Manual](USER MANUAL.pdf)
 
 ## Progress Log
 
