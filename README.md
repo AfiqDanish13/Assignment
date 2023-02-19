@@ -14,7 +14,7 @@ This is a game called Alien Vs Zombie. The objective of this game is to use the 
 
 ## User Manual
 
-[User Manual](USER MANUAL.pdf)
+Please refer user manual pdf in the repository
 
 ## Progress Log
 
