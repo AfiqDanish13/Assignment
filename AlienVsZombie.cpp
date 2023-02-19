@@ -1,13 +1,12 @@
-// ***************************************************************************************************** 
-// Course: TCP1101 PROGRAMMING FUNDAMENTALS 
-// Year: Trimester 1, 2022/23 (T2215) 
-// Lab: TT7L 
-// Names: MUHAMMAD AFIQ DANISH BIN SUNARDI | MUHAMMAD AMIR ADIB BIN MOHD AMINUDDIN | HAKEEM BIN AMINUDIN 
-// IDs: 1211103424 | 1211103233 | 1211103830 
-// Emails: 1211103424@student.mmu.edu.my | 1211103233@student.mmu.edu.my | 1211103830@student.mmu.edu.my 
-// Phones: 0102870286 | 0183831880 | 01121380773 
-// ***************************************************************************************************** 
-
+// *****************************************************************************************************
+// Course: TCP1101 PROGRAMMING FUNDAMENTALS
+// Year: Trimester 1, 2022/23 (T2215)
+// Lab: TT7L
+// Names: MUHAMMAD AFIQ DANISH BIN SUNARDI | MUHAMMAD AMIR ADIB BIN MOHD AMINUDDIN | HAKEEM BIN AMINUDIN
+// IDs: 1211103424 | 1211103233 | 1211103830
+// Emails: 1211103424@student.mmu.edu.my | 1211103233@student.mmu.edu.my | 1211103830@student.mmu.edu.my
+// Phones: 0102870286 | 0183831880 | 01121380773
+// *****************************************************************************************************
 
 #include <iostream>
 #include <string>
@@ -22,6 +21,7 @@ class Game
 {
 private:
     int column, row, zombie;
+
 public:
     Game(int row, int column, int zombie);
     void start(int row, int column, int zombie);
@@ -634,10 +634,264 @@ void Game::start(int row, int column, int zombie)
                     board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
                     com = nextcom;
                 }
-
             }
-            //hakeem sambung
+            // hakeem sambung
+            //  zombie movement's after alien finished turn
+            for (z = 1; z <= zombie; z++)
+            {
+                char moveAlien = (48 + z);
+                for (r = 0; r < row; r++)
+                {
+                    for (c = 0; c < column; c++)
+                    {
+                        if (random[r][c] == moveAlien)
+                        {
+                            // determine valid moves
+                            bool validMoves[4] = {true, true, true, true};
+                            if (c == 0 || random[r][c - 1] == 'A')
+                            {
+                                validMoves[0] = false; // left is not a valid move
+                            }
+                            if (c == column - 1 || random[r][c + 1] == 'A')
+                            {
+                                validMoves[1] = false; // right is not a valid move
+                            }
+                            if (r == 0 || random[r - 1][c] == 'A')
+                            {
+                                validMoves[2] = false; // up is not a valid move
+                            }
+                            if (r == row - 1 || random[r + 1][c] == 'A')
+                            {
+                                validMoves[3] = false; // down is not a valid move
+                            }
+
+                            // choose a random valid move
+                            int move;
+                            do
+                            {
+                                move = rand() % 4;
+                            } while (!validMoves[move]);
+
+                            // move in the chosen direction
+                            switch (move)
+                            {
+                            case 0:
+                                random[r][c - 1] = moveAlien;
+                                break;
+                            case 1:
+                                random[r][c + 1] = moveAlien;
+                                break;
+                            case 2:
+                                random[r - 1][c] = moveAlien;
+                                break;
+                            case 3:
+                                random[r + 1][c] = moveAlien;
+                                break;
+                            }
+
+                            // clear the old position
+                            random[r][c] = ' ';
+
+                            // break out of the loops
+                            goto next_zombie;
+                        }
+                    }
+                }
+            next_zombie:; // label for goto statement
+            }
+            bool zombiemovedone = false;
+            while (!zombiemovedone)
+            {
+                int zr, zc;
+                bool alieninrange = true;
+                for (z = 0; z < zombie; z++)
+                {
+                    int range = zombdata[z][2];
+                    char zombienumber = (z + 49);
+                    for (int r = 0; r < row; r++)
+                    {
+                        for (int c = 0; c < column; c++)
+                        {
+                            if (random[r][c] == zombienumber)
+                            {
+                                zr = r;
+                                zc = c;
+                                break;
+                            }
+                        }
+                    }
+                    for (int ragr = -range; ragr <= range; ragr++)
+                    {
+                        for (int ragc = -range; ragc <= range; ragc++)
+                        {
+                            char zombieattacking = random[zr + ragr][zc + ragc];
+                            if (zombieattacking == 'A')
+                            {
+                                int zombatt = zombdata[z][1];
+                                alife = alife - zombatt;
+                                board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                                cout << "Alien is in the range of Zombie " << z + 1 << endl;
+                                cout << "Alien life reduce by " << zombdata[z][1] << endl;
+                                ragc = range + 1;
+                                ragr = range + 1;
+                                alieninrange = true;
+                                if (alife <= 0)
+                                {
+                                    cout << "Alien die.\nYou lose the game!" << endl;
+                                    turn = true;
+                                    win = true;
+                                    zombiemovedone = true;
+                                    system("pause");
+                                    system("cls");
+                                    break;
+                                }
+                                system("cls");
+                            }
+                            else
+                            {
+                                alieninrange = false;
+                            }
+                        }
+                    }
+                    if (alieninrange == false)
+                    {
+                        board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                        cout << "Alien is not in range of Zombie " << z + 1 << endl;
+                        system("pause");
+                    }
+                    system("cls");
+                }
+                zombiemovedone = true;
+            }
         }
+        else if (zombiedead == true)
+        {
+            turn = true;
+            win = true;
+            cout << "All zombie is dead.\nYou win!" << endl;
+            system("pause");
+            system("cls");
+        }
+        else if (playerquit == true)
+        {
+            turn = true;
+            win = true;
+        }
+    } while (!turn);
+}
+while (!win)
+    ;
+}
+void Gameboard(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata)
+{
+    cout << ".: Alien vs Zombie :." << endl;
+    int r;
+    int c;
+    int z = 0;
+    int n;
+    char ran;
+    for (r = 0; r < row; r++)
+    {
+        cout << " ";
+        if (row > 9)
+        {
+            cout << " ";
+        }
+        for (c = 0; c < column; c++)
+        {
+            cout << "+-";
+        }
+        cout << "+" << endl;
+        if (row > 9 && r < 9)
+        {
+            cout << " ";
+        }
+        cout << r + 1;
+        for (c = 0; c < column; c++)
+        {
+            cout << "|";
+            // cout << random[r][c];
+            cout << *(random + r * column + c);
+        }
+        cout << "|" << endl;
+    }
+    cout << " ";
+    if (row > 9)
+    {
+        cout << " ";
+    }
+    for (c = 0; c < column; c++)
+    {
+        cout << "+-";
+    }
+    cout << "+" << endl;
+    int tens = (column - 10) / 10;
+    int dec = column % 10;
+    int t = 1;
+    int d;
+    if (column > 10)
+    {
+        if (row > 10)
+        {
+            cout << " ";
+        }
+        cout << "  ";
+        for (c = 0; c < 9; c++)
+        {
+            cout << "  ";
+        }
+        for (t = 0; t < tens; t++)
+        {
+            for (c = 0; c < 10; c++)
+            {
+                cout << t + 1 << " ";
+            }
+        }
+        for (d = 0; d <= dec; d++)
+        {
+            cout << t + 1 << " ";
+        }
+        cout << endl;
+        if (row > 10)
+        {
+            cout << " ";
+        }
+        cout << " ";
+        int m = 1;
+        for (m = 0; m <= tens; m++)
+        {
+            for (c = 1; c < 10; c++)
+            {
+                cout << " " << c;
+            }
+            cout << " 0";
+        }
+        for (d = 1; d <= dec; d++)
+        {
+            cout << " " << d;
+        }
+    }
+    else
+    {
+        if (row > 10)
+        {
+            cout << " ";
+        }
+        cout << "  ";
+        for (d = 1; d <= dec; d++)
+        {
+            cout << d << " ";
+        }
+    }
+    cout << endl
+         << endl
+         << "-> Alien   : Life " << alife << ", Attack " << aattack << endl;
+    for (z = 0; z < zombie; z++)
+    {
+        cout << "   Zombie " << z + 1 << ": Life " << *(zombdata + z * 4) << ", Attack " << *(zombdata + z * 4 + 1) << ", Range " << *(zombdata + z * 4 + 2) << endl;
+    }
+    cout << endl;
+}
 
 void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 {
@@ -650,11 +904,11 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
     cout << "Zombie Count    : " << board[2] << endl;
 
     cout << "\nDo you want to change the game settings? (y/n)\n=> ";
-    //cin >> response;
+    // cin >> response;
 
     if (response == 'n')
     {
-        //system("Pause");
+        // system("Pause");
 
         srand(1);
         test(board);
@@ -680,7 +934,7 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
                 continue;
             }
 
-            else if(rowNumber <2)
+            else if (rowNumber < 2)
             {
                 cout << "\nPlease insert a number bigger than 1!" << endl;
                 continue;
@@ -695,7 +949,7 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
                 continue;
             }
 
-            else if(columnNumber <2)
+            else if (columnNumber < 2)
             {
                 cout << "\nPlease insert a number bigger than 1!" << endl;
                 continue;
@@ -712,19 +966,17 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 
         cout << endl;
 
-        board[0] = rowNumber; //y axis
-        board[1] = columnNumber; //x axis
+        board[0] = rowNumber;    // y axis
+        board[1] = columnNumber; // x axis
         board[2] = zombieNumber;
 
-
-        //passing the entered_input into the object variables
-        Alien obj(rowNumber , columnNumber);
+        // passing the entered_input into the object variables
+        Alien obj(rowNumber, columnNumber);
 
         cout << "Settings Updated!";
 
         cout << endl;
-        //system("Pause");
-
+        // system("Pause");
 
         srand(1);
         test(board);
@@ -747,20 +999,17 @@ int main()
         cout << "| 3 => Quit                                   |" << endl;
         cout << "+---------------------------------------------+" << endl;
         cout << "Choice => ";
-        //cin >> choice;
+        // cin >> choice;
 
         switch (choice)
         {
         case 1:
             int rowNumber, columnNumber, zombieNumber;
-            startgame(rowNumber, columnNumber, zombieNumber);            
+            startgame(rowNumber, columnNumber, zombieNumber);
             break;
 
         case 2:
-
-            
-                
-        }
         }
     }
+}
 }
