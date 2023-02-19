@@ -16,7 +16,10 @@
 #include <ctime>   // for time() in srand( time(NULL) );
 #include <iomanip> // for setw()
 #include <cmath>
+#include <fstream>
+
 using namespace std;
+// game class
 class Game
 {
 private:
@@ -25,9 +28,14 @@ private:
 public:
     Game(int row, int column, int zombie);
     void start(int row, int column, int zombie);
-
+    void al(int &alife, int &aattack);
     void board(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata);
 };
+
+Game::Game(int row, int column, int zombie)
+{
+}
+
 
 // create gameboard
 void Game::board(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata)
@@ -150,6 +158,41 @@ void Game::board(int row, int column, int zombie, char *random, int alife, int a
         cout << "   Zombie " << z + 1 << ": Life " << *(zombdata + z * 4) << ", Attack " << *(zombdata + z * 4 + 1) << ", Range " << *(zombdata + z * 4 + 2) << endl;
     }
     cout << endl;
+}
+
+void help()
+{
+    cout << "           Object           " << endl;
+    cout << "+--------------------------+" << endl;
+    cout << "'a'\t:alien (you)" << endl;
+    cout << "'z'\t:zombie (your enemy)" << endl;
+    cout << "'h'\t:health (add 20 life to alien) " << endl;
+    cout << "'p'\t:pod (instanly inflicts 10 damage to zombie when hit by alien) " << endl;
+    cout << "'r'\t:rock (hides a game object, reveals when hit by alien, stop when hit by alien" << endl;
+    cout << "' '\t:space (just a empty space)" << endl;
+    cout << "'.'\t:trail (left by alien moves, reset to random object after Alien's turn ends) " << endl;
+    cout << "           Command           " << endl;
+    cout << "+---------------------------+" << endl;
+    cout << "up\t:Alien to move up." << endl;
+    cout << "down\t:Alien to move down." << endl;
+    cout << "left\t:Alien to move left." << endl;
+    cout << "right\t:Alien to move right." << endl;
+    cout << "arrow\t:Switch the direction of an arrow object in the game board." << endl;
+    cout << "skill\t:Special ability that can be selected to play the game." << endl;
+    cout << "help\t:List and describe the commands that the player can use in the game." << endl;
+    cout << "save\t:Save the current game to a file." << endl;
+    cout << "load\t:Load a saved game from a file." << endl;
+    cout << "quit\t:Quit the game while still in play." << endl;
+    cout << endl;
+    system("pause");
+    system("cls");
+    cout << endl;
+}
+
+void Game::al(int &alife, int &aattack)
+{
+    alife = 100;
+    aattack = 0;
 }
 
 void Game::start(int row, int column, int zombie)
@@ -635,153 +678,185 @@ void Game::start(int row, int column, int zombie)
                     com = nextcom;
                 }
             }
-            // hakeem sambung
-            //  zombie movement's after alien finished turn
-            for (z = 1; z <= zombie; z++)
+
+            if (zombiedeadnum == zombie)
             {
-                char moveAlien = (48 + z);
+                zombiedead = true;
+            }
+            if (zombiedead == false && playerquit == false)
+            {
+                cout << "Alien's turn ended.\n";
+                system("pause");
+                system("cls");
+                aattack = 0;
+                string alienturn;
+                int alientrail = 0;
                 for (r = 0; r < row; r++)
                 {
                     for (c = 0; c < column; c++)
                     {
-                        if (random[r][c] == moveAlien)
+                        if (random[r][c] == '.')
                         {
-                            // determine valid moves
-                            bool validMoves[4] = {true, true, true, true};
-                            if (c == 0 || random[r][c - 1] == 'A')
-                            {
-                                validMoves[0] = false; // left is not a valid move
-                            }
-                            if (c == column - 1 || random[r][c + 1] == 'A')
-                            {
-                                validMoves[1] = false; // right is not a valid move
-                            }
-                            if (r == 0 || random[r - 1][c] == 'A')
-                            {
-                                validMoves[2] = false; // up is not a valid move
-                            }
-                            if (r == row - 1 || random[r + 1][c] == 'A')
-                            {
-                                validMoves[3] = false; // down is not a valid move
-                            }
-
-                            // choose a random valid move
-                            int move;
-                            do
-                            {
-                                move = rand() % 4;
-                            } while (!validMoves[move]);
-
-                            // move in the chosen direction
-                            switch (move)
-                            {
-                            case 0:
-                                random[r][c - 1] = moveAlien;
-                                break;
-                            case 1:
-                                random[r][c + 1] = moveAlien;
-                                break;
-                            case 2:
-                                random[r - 1][c] = moveAlien;
-                                break;
-                            case 3:
-                                random[r + 1][c] = moveAlien;
-                                break;
-                            }
-
-                            // clear the old position
-                            random[r][c] = ' ';
-
-                            // break out of the loops
-                            goto next_zombie;
+                            ran = object[rand() % o];
+                            random[r][c] = ran;
+                            alienturn = "Alien's trail '.' is replaced by random objects.\n";
+                            alientrail = alientrail + 1;
                         }
                     }
                 }
-            next_zombie:; // label for goto statement
-            }
-            bool zombiemovedone = false;
-            while (!zombiemovedone)
-            {
-                int zr, zc;
-                bool alieninrange = true;
-                for (z = 0; z < zombie; z++)
+                if (alientrail > 0)
                 {
-                    int range = zombdata[z][2];
-                    char zombienumber = (z + 49);
-                    for (int r = 0; r < row; r++)
-                    {
-                        for (int c = 0; c < column; c++)
-                        {
-                            if (random[r][c] == zombienumber)
-                            {
-                                zr = r;
-                                zc = c;
-                                break;
-                            }
-                        }
-                    }
-                    for (int ragr = -range; ragr <= range; ragr++)
-                    {
-                        for (int ragc = -range; ragc <= range; ragc++)
-                        {
-                            char zombieattacking = random[zr + ragr][zc + ragc];
-                            if (zombieattacking == 'A')
-                            {
-                                int zombatt = zombdata[z][1];
-                                alife = alife - zombatt;
-                                board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
-                                cout << "Alien is in the range of Zombie " << z + 1 << endl;
-                                cout << "Alien life reduce by " << zombdata[z][1] << endl;
-                                ragc = range + 1;
-                                ragr = range + 1;
-                                alieninrange = true;
-                                if (alife <= 0)
-                                {
-                                    cout << "Alien die.\nYou lose the game!" << endl;
-                                    turn = true;
-                                    win = true;
-                                    zombiemovedone = true;
-                                    system("pause");
-                                    system("cls");
-                                    break;
-                                }
-                                system("cls");
-                            }
-                            else
-                            {
-                                alieninrange = false;
-                            }
-                        }
-                    }
-                    if (alieninrange == false)
-                    {
-                        board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
-                        cout << "Alien is not in range of Zombie " << z + 1 << endl;
-                        system("pause");
-                    }
+                    board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                    cout << alienturn;
+                    system("pause");
                     system("cls");
                 }
-                zombiemovedone = true;
+
+                // zombie movement's after alien finished turn
+                for (z = 1; z <= zombie; z++)
+                {
+                    char moveAlien = (48 + z);
+                    for (r = 0; r < row; r++)
+                    {
+                        for (c = 0; c < column; c++)
+                        {
+                            if (random[r][c] == moveAlien)
+                            {
+                                // determine valid moves
+                                bool validMoves[4] = {true, true, true, true};
+                                if (c == 0 || random[r][c - 1] == 'A')
+                                {
+                                    validMoves[0] = false; // left is not a valid move
+                                }
+                                if (c == column - 1 || random[r][c + 1] == 'A')
+                                {
+                                    validMoves[1] = false; // right is not a valid move
+                                }
+                                if (r == 0 || random[r - 1][c] == 'A')
+                                {
+                                    validMoves[2] = false; // up is not a valid move
+                                }
+                                if (r == row - 1 || random[r + 1][c] == 'A')
+                                {
+                                    validMoves[3] = false; // down is not a valid move
+                                }
+
+                                // choose a random valid move
+                                int move;
+                                do
+                                {
+                                    move = rand() % 4;
+                                } while (!validMoves[move]);
+
+                                // move in the chosen direction
+                                switch (move)
+                                {
+                                case 0:
+                                    random[r][c - 1] = moveAlien;
+                                    break;
+                                case 1:
+                                    random[r][c + 1] = moveAlien;
+                                    break;
+                                case 2:
+                                    random[r - 1][c] = moveAlien;
+                                    break;
+                                case 3:
+                                    random[r + 1][c] = moveAlien;
+                                    break;
+                                }
+
+                                // clear the old position
+                                random[r][c] = ' ';
+
+                                // break out of the loops
+                                goto next_zombie;
+                            }
+                        }
+                    }
+                next_zombie:; // label for goto statement
+                }
+                bool zombiemovedone = false;
+                while (!zombiemovedone)
+                {
+                    int zr, zc;
+                    bool alieninrange = true;
+                    for (z = 0; z < zombie; z++)
+                    {
+                        int range = zombdata[z][2];
+                        char zombienumber = (z + 49);
+                        for (int r = 0; r < row; r++)
+                        {
+                            for (int c = 0; c < column; c++)
+                            {
+                                if (random[r][c] == zombienumber)
+                                {
+                                    zr = r;
+                                    zc = c;
+                                    break;
+                                }
+                            }
+                        }
+                        for (int ragr = -range; ragr <= range; ragr++)
+                        {
+                            for (int ragc = -range; ragc <= range; ragc++)
+                            {
+                                char zombieattacking = random[zr + ragr][zc + ragc];
+                                if (zombieattacking == 'A')
+                                {
+                                    int zombatt = zombdata[z][1];
+                                    alife = alife - zombatt;
+                                    board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                                    cout << "Alien is in the range of Zombie " << z + 1 << endl;
+                                    cout << "Alien life reduce by " << zombdata[z][1] << endl;
+                                    ragc = range + 1;
+                                    ragr = range + 1;
+                                    alieninrange = true;
+                                    if (alife <= 0)
+                                    {
+                                        cout << "Alien die.\nYou lose the game!" << endl;
+                                        turn = true;
+                                        win = true;
+                                        zombiemovedone = true;
+                                        system("pause");
+                                        system("cls");
+                                        break;
+                                    }
+                                    system("cls");
+                                }
+                                else
+                                {
+                                    alieninrange = false;
+                                }
+                            }
+                        }
+                        if (alieninrange == false)
+                        {
+                            board(row, column, zombie, (char *)random, alife, aattack, (int *)zombdata);
+                            cout << "Alien is not in range of Zombie " << z + 1 << endl;
+                            system("pause");
+                        }
+                        system("cls");
+                    }
+                    zombiemovedone = true;
+                }
             }
-        }
-        else if (zombiedead == true)
-        {
-            turn = true;
-            win = true;
-            cout << "All zombie is dead.\nYou win!" << endl;
-            system("pause");
-            system("cls");
-        }
-        else if (playerquit == true)
-        {
-            turn = true;
-            win = true;
-        }
-    } while (!turn);
+            else if (zombiedead == true)
+            {
+                turn = true;
+                win = true;
+                cout << "All zombie is dead.\nYou win!" << endl;
+                system("pause");
+                system("cls");
+            }
+            else if (playerquit == true)
+            {
+                turn = true;
+                win = true;
+            }
+        } while (!turn);
+    } while (!win);
 }
-while (!win)
-    ;
-}
+
 void Gameboard(int row, int column, int zombie, char *random, int alife, int aattack, int *zombdata)
 {
     cout << ".: Alien vs Zombie :." << endl;
@@ -896,7 +971,7 @@ void Gameboard(int row, int column, int zombie, char *random, int alife, int aat
 void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
 {
     int board[] = {5, 9, 1};
-    char response = 'n';
+    char response, com;
     cout << "\nDefault Game Settings" << endl;
     cout << "------------------------" << endl;
     cout << "Board Rows      : " << board[0] << endl;
@@ -904,14 +979,14 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
     cout << "Zombie Count    : " << board[2] << endl;
 
     cout << "\nDo you want to change the game settings? (y/n)\n=> ";
-    // cin >> response;
+    cin >> response;
 
     if (response == 'n')
     {
         // system("Pause");
 
-        srand(1);
-        test(board);
+        Game Game(board[0], board[1], board[2]);
+        Game.start(board[0], board[1], board[2]);
     }
 
     else if (response == 'y')
@@ -970,24 +1045,27 @@ void startgame(int &rowNumber, int &columnNumber, int &zombieNumber)
         board[1] = columnNumber; // x axis
         board[2] = zombieNumber;
 
-        // passing the entered_input into the object variables
-        Alien obj(rowNumber, columnNumber);
-
         cout << "Settings Updated!";
 
         cout << endl;
         // system("Pause");
 
         srand(1);
-        test(board);
+        Game Game(board[0], board[1], board[2]);
+        Game.start(board[0], board[1], board[2]);
     }
 }
-
+void al(int &alife, int &aattack)
+{
+    alife = 100;
+    aattack = 0;
+}
 int main()
 {
-    int choice = 1;
+    int choice;
     bool gameOn = true;
     int board[] = {5, 9, 1};
+
     while (gameOn)
     {
         cout << "+---------------------------------------------+" << endl;
@@ -999,7 +1077,7 @@ int main()
         cout << "| 3 => Quit                                   |" << endl;
         cout << "+---------------------------------------------+" << endl;
         cout << "Choice => ";
-        // cin >> choice;
+        cin >> choice;
 
         switch (choice)
         {
@@ -1007,9 +1085,12 @@ int main()
             int rowNumber, columnNumber, zombieNumber;
             startgame(rowNumber, columnNumber, zombieNumber);
             break;
-
+        case 3:
+            cout << "Thanks for playing the game!! \n";
+            system("pause");
+            gameOn = false;
+            break;
         case 2:
-        }
+            
     }
-}
 }
